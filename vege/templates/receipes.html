@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Recipe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: auto;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        /* Style for displaying recipes */
+        .recipe-list {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .recipe-item {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+        .recipe-item img {
+            width: 150px;
+            height: 150px;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .recipe-info {
+            flex: 1;
+        }
+        .recipe-info h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .recipe-info p {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Add New Recipe</h2>
+
+<!-- Form to Add Recipe -->
+<form action="/receipes" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <label for="recepie_name">Recipe Name</label>
+    <input type="text" id="recepie_name" name="recepie_name" maxlength="500" placeholder="Enter recipe name" required>
+
+    <label for="recepie_description">Recipe Description</label>
+    <textarea id="recepie_description" name="recepie_description" rows="5" placeholder="Enter recipe description" required></textarea>
+
+    <label for="recepie_image">Recipe Image</label>
+    <input type="file" id="recepie_image" name="recepie_image" accept="image/*" required>
+   
+    <input type="submit" value="Add Recipe">
+</form>
+
+<!-- Display List of Recipes -->
+<!-- Display List of Recipes -->
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Recipe Name</th>
+        <th scope="col">Recipe Description</th>
+        <th scope="col">Recipe Image</th>
+        <th scope="col">ACTIONS</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for recipe in recipes %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ recipe.recepie_name }}</td>
+        <td>{{ recipe.recepie_description }}</td>
+        <td><img src="{{ recipe.recepie_image.url }}" alt="no image" width="100"></td>
+        {% comment %} <td> 
+           <button type="button" class="btn btn-danger">Delete</button>
+        </td> {% endcomment %}
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No recipes found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+
+
+</body>
+</html>
