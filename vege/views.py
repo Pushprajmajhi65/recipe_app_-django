@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate , login
 
 # Create your views here.
 def receipes(request):
@@ -25,27 +25,31 @@ def receipes(request):
         return redirect('receipes')
     queryset = Recepie.objects.all()
     context = {'recipes': queryset} 
-
-
+    return render(request, "receipes.html", context)
+    
 
 def login_page(request):
     if request.method == "POST":
-        
-        username = request.POST.get('username')  # Changed user_name to username
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
-        if User.objects.filter(username=username).exists:
-            messages.error(request, "User name does not exist go and register ")
+        # Check if the user exists
+        if not User.objects.filter(username=username).exists():
+            messages.error(request, "Username does not exist. Please register.")
             return redirect('login')
-        User= authenticate(username=username, password=password)
-        messages.error(request, "invalid password")
-        return redirect('login')
-
-
-
         
-    
+        # Authenticate the user
+        user = authenticate(username=username, password=password)
+        if user is None:
+            messages.error(request, "Invalid password")
+            return redirect('login')
+        else:
+            login(request, user)
+            return redirect('receipes')
+
     return render(request, 'login.html')
+
+
 
 def register_page(request):
     if request.method == "POST":
